@@ -1,0 +1,38 @@
+/*!
+ * Tiny Accessibility Checker Plugin
+ *
+ * Copyright (c) 2023 Ephox Corporation DBA Tiny Technologies, Inc.
+ * Licensed under the Tiny commercial license. See https://www.tiny.cloud/legal/
+ *
+ * Version: 3.3.1-77
+ */
+
+[data-ephox-foam-a11y-violation] {
+  outline: 1px solid;
+  position: relative;
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-current-violation] {
+  outline-width: 2px;
+  transition: outline-width .1s ease-in-out, background-color .1s ease-in-out;
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-severity-info] {
+  outline-color: #3498db;
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-severity-warn] {
+  outline-color: #e67e22;
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-severity-error] {
+  outline-color: #e74c3c;
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-current-violation="info"] {
+  outline-color: rgba(52,152,219,.25);
+  background-color: rgba(52,152,219,.25);
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-current-violation="warning"] {
+  outline-color: rgba(230,126,34,.25);
+  background-color: rgba(230,126,34,.25);
+}
+[data-ephox-foam-a11y-violation][data-ephox-foam-a11y-current-violation="error"] {
+  outline-color: rgba(231,76,60,.25);
+  background-color: rgba(231,76,60,.25);
+}

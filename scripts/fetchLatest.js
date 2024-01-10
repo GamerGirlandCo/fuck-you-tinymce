@@ -27,7 +27,8 @@ async function main() {
 		await fetchAux("/tinymce.d.ts");
 		await fetchAux("/models/dom/model.min.js");
 		await fetchAux("/icons/default/icons.min.js");
-		await fetchAux("/plugins/powerpaste/js/wordimport.js")
+		await fetchAux("/plugins/powerpaste/js/wordimport.js");
+		await fetchAux("/plugins/a11ychecker/css/annotations.css")
 		for(let t of skins) {
 			await fetchAux(`/skins/content/${t}/content.min.css`)
 		}
