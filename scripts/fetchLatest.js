@@ -5,7 +5,7 @@ import {resolve} from "path";
 const freeKey = "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc";
 const skins = ["dark", "default", "document", "tinymce-5", "tinymce-5-dark", "writer"];
 const uis = ["oxide", "oxide-dark", "tinymce-5", "tinymce-5-dark"];
-const pluginList = 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss';
+const pluginList =  "a11ychecker advcode advtable advanced-templates advanced-typography ai casechange checklist introduction-to-tiny-comments editimage introduction-to-mediaembed export footnotes formatpainter inline-css linkchecker mentions mergetags moxiemanager pageembed permanentpen introduction-to-powerpaste rtc-introduction introduction-to-tiny-spellchecker autocorrect tableofcontents tinydrive-introduction accordion advlist anchor autolink autoresize autosave charmap code codesample directionality emoticons fullscreen help image importcss insertdatetime link lists media nonbreaking pagebreak preview quickbars save searchreplace table template visualblocks visualchars wordcount";
 const base = `https://cdn.tiny.cloud/1/${freeKey}/tinymce/6`
 
 let headers = {
