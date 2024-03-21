@@ -5,8 +5,8 @@ import {resolve, dirname} from "path";
 const freeKey = "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc";
 const skins = ["dark", "default", "document", "tinymce-5", "tinymce-5-dark", "writer"];
 const uis = ["oxide", "oxide-dark", "tinymce-5", "tinymce-5-dark"];
-const pluginList = "a11ychecker advcode advtable advtemplate typography ai casechange checklist tinycomments editimage mediaembed export footnotes formatpainter inlinecss linkchecker mentions mergetags moxiemanager pageembed permanentpen powerpaste rtc spellchecker autocorrect tableofcontents tinydrive accordion advlist anchor autolink autoresize autosave charmap code codesample directionality emoticons fullscreen help image importcss insertdatetime link lists media nonbreaking pagebreak preview quickbars save searchreplace table template visualblocks visualchars wordcount";
-const base = `https://cdn.tiny.cloud/1/${freeKey}/tinymce/6`
+const pluginList = "a11ychecker advcode advtable advtemplate typography ai casechange checklist tinycomments editimage mediaembed export footnotes formatpainter inlinecss linkchecker mentions mergetags moxiemanager pageembed permanentpen powerpaste rtc tinymcespellchecker autocorrect tableofcontents tinydrive accordion advlist anchor autolink autoresize autosave charmap code codesample directionality emoticons fullscreen help image importcss insertdatetime link lists media nonbreaking pagebreak preview quickbars save searchreplace table template visualblocks visualchars wordcount";
+const base = `https://cdn.tiny.cloud/1/${freeKey}/tinymce/7`
 
 let headers = {
 	Referer: "http://tiny.cloud"
