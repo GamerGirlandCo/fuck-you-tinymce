@@ -4,7 +4,7 @@
  * Copyright (c) 2023 Ephox Corporation DBA Tiny Technologies, Inc.
  * Licensed under the Tiny commercial license. See https://www.tiny.cloud/legal/
  *
- * Version: 3.4.0-125
+ * Version: 7.0.0-22
  */
 
 .tox .tox-conversations{display:flex;flex-direction:column;position:relative}.tox .tox-conversations__header{align-items:center;display:flex;justify-content:space-between}.tox .tox-conversations__title{font-size:20px;font-weight:400;padding:8px 0 8px 0}.tox-comment__scroll .tox-comment.tox-comment--disappearing{transition:opacity .5s ease}.tox-comment__scroll .tox-comment[data-transitioning-destination="deleting"]{opacity:0}.tox .tox-comment__body{max-height:7em;overflow:hidden;transition:max-height .5s cubic-bezier(0, 1, 0, 1);position:relative}.tox .tox-comment__body.tox-comment__body--expanded{max-height:100em;transition:max-height 1s ease-in-out}.tox .tox-comment .tox-comment__body.tox-comment__body--pending{transition:max-height 0s}.tox .tox-conversations{min-width:300px;max-width:300px;width:300px}.tox .tox-comment:focus{background-color:rgba(34,47,62,0.1)}.tox .tox-comment__expander p:focus{font-weight:bold}
