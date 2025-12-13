@@ -1,0 +1,936 @@
+/*!
+ * Tiny Commercial License Key Manager
+ *
+ * Copyright (c) 2025 Ephox Corporation DBA Tiny Technologies, Inc.
+ * Licensed under the Tiny commercial license. See https://www.tiny.cloud/legal/
+ *
+ * Version: 8.3.0-112
+ */
+(function () {
+	"use strict";
+
+	const e = Object.getPrototypeOf;
+	const r = (e, r, t) => !!t(e, r.prototype) || e.constructor?.name === r.name;
+	const t = (e) => (t) =>
+		((e) => {
+			const t = typeof e;
+			if (e === null) {
+				return "null";
+			} else if (t === "object" && Array.isArray(e)) {
+				return "array";
+			} else if (t === "object" && r(e, String, (e, r) => r.isPrototypeOf(e))) {
+				return "string";
+			} else {
+				return t;
+			}
+		})(t) === e;
+	const n = (e) => (r) => typeof r === e;
+	const o = t("string");
+	const s = t("object");
+	const a = (t) => ((t, n) => s(t) && r(t, n, (r, t) => e(r) === t))(t, Object);
+	const i = n("boolean");
+	const l = (e) => e == null;
+	const c = (e) => !l(e);
+	const u = n("function");
+	const y = n("number");
+	const d = () => {};
+	const g = (e) => () => e;
+	const p = (e) => e;
+	const h = (e) => e();
+	const m = g(false);
+	const v = g(true);
+	class f {
+		tag;
+		value;
+		static singletonNone = new f(false);
+		constructor(e, r) {
+			this.tag = e;
+			this.value = r;
+		}
+		static some(e) {
+			return new f(true, e);
+		}
+		static none() {
+			return f.singletonNone;
+		}
+		fold(e, r) {
+			if (this.tag) {
+				return r(this.value);
+			} else {
+				return e();
+			}
+		}
+		isSome() {
+			return this.tag;
+		}
+		isNone() {
+			return !this.tag;
+		}
+		map(e) {
+			if (this.tag) {
+				return f.some(e(this.value));
+			} else {
+				return f.none();
+			}
+		}
+		bind(e) {
+			if (this.tag) {
+				return e(this.value);
+			} else {
+				return f.none();
+			}
+		}
+		exists(e) {
+			return this.tag && e(this.value);
+		}
+		forall(e) {
+			return !this.tag || e(this.value);
+		}
+		filter(e) {
+			if (!this.tag || e(this.value)) {
+				return this;
+			} else {
+				return f.none();
+			}
+		}
+		getOr(e) {
+			if (this.tag) {
+				return this.value;
+			} else {
+				return e;
+			}
+		}
+		or(e) {
+			if (this.tag) {
+				return this;
+			} else {
+				return e;
+			}
+		}
+		getOrThunk(e) {
+			if (this.tag) {
+				return this.value;
+			} else {
+				return e();
+			}
+		}
+		orThunk(e) {
+			if (this.tag) {
+				return this;
+			} else {
+				return e();
+			}
+		}
+		getOrDie(e) {
+			if (this.tag) {
+				return this.value;
+			}
+			throw new Error(e ?? "Called getOrDie on None");
+		}
+		static from(e) {
+			if (c(e)) {
+				return f.some(e);
+			} else {
+				return f.none();
+			}
+		}
+		getOrNull() {
+			if (this.tag) {
+				return this.value;
+			} else {
+				return null;
+			}
+		}
+		getOrUndefined() {
+			return this.value;
+		}
+		each(e) {
+			if (this.tag) {
+				e(this.value);
+			}
+		}
+		toArray() {
+			if (this.tag) {
+				return [this.value];
+			} else {
+				return [];
+			}
+		}
+		toString() {
+			if (this.tag) {
+				return `some(${this.value})`;
+			} else {
+				return "none()";
+			}
+		}
+	}
+	const k = Array.prototype.indexOf;
+	const b = Object.keys;
+	const w = Object.hasOwnProperty;
+	const O = (e, r) => (_(e, r) ? f.from(e[r]) : f.none());
+	const _ = (e, r) => w.call(e, r);
+	const T = (e) => {
+		const r = (r) => r(e);
+		const t = g(e);
+		const n = () => o;
+		const o = {
+			tag: true,
+			inner: e,
+			fold: (r, t) => t(e),
+			isValue: v,
+			isError: m,
+			map: (r) => K.value(r(e)),
+			mapError: n,
+			bind: r,
+			exists: r,
+			forall: r,
+			getOr: t,
+			or: n,
+			getOrThunk: t,
+			orThunk: n,
+			getOrDie: t,
+			each: (r) => {
+				r(e);
+			},
+			toOptional: () => f.some(e),
+		};
+		return o;
+	};
+	const $ = (e) => {
+		const r = () => t;
+		const t = {
+			tag: false,
+			inner: e,
+			fold: (r, t) => r(e),
+			isValue: m,
+			isError: v,
+			map: r,
+			mapError: (r) => K.error(r(e)),
+			bind: r,
+			exists: m,
+			forall: v,
+			getOr: p,
+			or: p,
+			getOrThunk: h,
+			orThunk: h,
+			getOrDie:
+				((n = String(e)),
+				() => {
+					throw new Error(n);
+				}),
+			each: d,
+			toOptional: f.none,
+		};
+		var n;
+		return t;
+	};
+	const K = {
+		value: T,
+		error: $,
+		fromOption: (e, r) => e.fold(() => $(r), T),
+	};
+	E = (e, r) => (a(e) && a(r) ? j(e, r) : r);
+	const j = (...e) => {
+		if (e.length === 0) {
+			throw new Error("Can't merge zero objects");
+		}
+		const r = {};
+		for (let t = 0; t < e.length; t++) {
+			const n = e[t];
+			for (const e in n) {
+				if (_(n, e)) {
+					r[e] = E(r[e], n[e]);
+				}
+			}
+		}
+		return r;
+	};
+	var E;
+	const S = (e, r) => {
+		const { type: t, message: n } = r;
+		e.notificationManager.open({
+			type: t,
+			text: n,
+		});
+	};
+	const C = (e, r) => {
+		const { console: t, editor: n } = r;
+		if (c(n)) {
+			if (e._skinLoaded) {
+				S(e, n);
+			} else {
+				e.on("SkinLoaded", () => {
+					S(e, n);
+				});
+			}
+		}
+		if (c(t)) {
+			((e) => {
+				((e) => {
+					switch (e) {
+						case "error":
+							return console.error;
+						case "info":
+							return console.info;
+						case "warn":
+							return console.warn;
+						default:
+							return console.log;
+					}
+				})(e.type)(e.message);
+			})(t);
+		}
+	};
+	const M = (e) => parseInt(e, 10);
+	const x = (e, r) => {
+		const t = e - r;
+		if (t === 0) {
+			return 0;
+		} else if (t > 0) {
+			return 1;
+		} else {
+			return -1;
+		}
+	};
+	const P = (e, r, t) => ({
+		major: e,
+		minor: r,
+		patch: t,
+	});
+	const A = (e) => {
+		const r = /([0-9]+)\.([0-9]+)\.([0-9]+)(?:(\-.+)?)/.exec(e);
+		if (r) {
+			return P(M(r[1]), M(r[2]), M(r[3]));
+		} else {
+			return P(0, 0, 0);
+		}
+	};
+	const N = (e, r) =>
+		!!e &&
+		((e, r) => {
+			const t = x(e.major, r.major);
+			if (t !== 0) {
+				return t;
+			}
+			const n = x(e.minor, r.minor);
+			if (n !== 0) {
+				return n;
+			}
+			const o = x(e.patch, r.patch);
+			if (o !== 0) {
+				return o;
+			} else {
+				return 0;
+			}
+		})(
+			((e) =>
+				A(
+					((e) =>
+						[e.majorVersion, e.minorVersion]
+							.join(".")
+							.split(".")
+							.slice(0, 3)
+							.join("."))(e),
+				))(e),
+			A(r),
+		) === -1;
+	const V = A("8.3.0");
+	const I = `${V.major}.${V.minor}.0`;
+	const U = `${V.major + 1}.0.0`;
+	const q = new WeakMap();
+	const D = (e) => {};
+	const R = (e, r = true) =>
+		`${e}${r ? " Read more: https://www.tiny.cloud/docs/tinymce/latest/license-key/" : ""}`;
+	const z = (e, r, t, n) => {
+		const o = c(n) ? `, status: ${n}` : "";
+		if (r === "fallback") {
+			C(e, {
+				console: {
+					type: "warn",
+					message: R(
+						`The API key could not be validated by the API key validation server [type: ${t}${o}]. Attempting fallback to provided license key.`,
+					),
+				},
+			});
+		} else {
+			const r =
+				"The editor is disabled because the API key could not be validated by the API key validation server";
+			C(e, {
+				console: {
+					type: "error",
+					message: R(`${r} [type: ${t}${o}].`),
+				},
+				editor: {
+					type: "warning",
+					message: `${r}.`,
+				},
+			});
+		}
+	};
+	const L = (e) => (r) => r.options.get(e);
+	const F = L("license_key");
+	const W = L("online_license_key");
+	var J;
+	(function (e) {
+		e[(e.Error = 0)] = "Error";
+		e[(e.Value = 1)] = "Value";
+	})((J ||= {}));
+	const B = (e, r, t) => (e.stype === J.Error ? r(e.serror) : t(e.svalue));
+	const G = (e) => ({
+		stype: J.Value,
+		svalue: e,
+	});
+	const H = (e) => ({
+		stype: J.Error,
+		serror: e,
+	});
+	const Q = B;
+	const X = (e, r) =>
+		H([
+			{
+				path: e,
+				getErrorInfo: r,
+			},
+		]);
+	const Y = (e) => ({
+		extract: (r, t) => {
+			o = (e) => ((e, r) => X(e, g(r)))(r, e);
+			if ((n = e(t)).stype === J.Error) {
+				return o(n.serror);
+			} else {
+				return n;
+			}
+			var n;
+			var o;
+		},
+		toString: g("val"),
+	});
+	const Z = (e, r) =>
+		Y((t) => {
+			const n = typeof t;
+			if (e(t)) {
+				return G(t);
+			} else {
+				return H(`Expected type: ${r} but got: ${n}`);
+			}
+		});
+	const ee = Z(y, "number");
+	const re = Z(o, "string");
+	const te = Z(i, "boolean");
+	const ne = (e, r, t) => {
+		switch (e.tag) {
+			case "field":
+				return r(e.key, e.newKey, e.presence, e.prop);
+			case "custom":
+				return t(e.newKey, e.instantiator);
+		}
+	};
+	const oe = (e, r, t, n) => n(O(e, r).getOrThunk(() => t(e)));
+	const se = (e, r, t, n, o) => {
+		const a = (e) => o.extract(r.concat([n]), e);
+		const i = (e) =>
+			e.fold(
+				() => G(f.none()),
+				(e) => {
+					t = o.extract(r.concat([n]), e);
+					s = f.some;
+					if (t.stype === J.Value) {
+						return {
+							stype: J.Value,
+							svalue: s(t.svalue),
+						};
+					} else {
+						return t;
+					}
+					var t;
+					var s;
+				},
+			);
+		switch (e.tag) {
+			case "required":
+				return ((e, r, t, n) =>
+					O(r, t).fold(
+						() =>
+							((e, r, t) =>
+								X(e, () => {
+									return (
+										'Could not find valid *required* value for "' +
+										r +
+										'" in ' +
+										(s((e = t)) && b(e).length > 100
+											? " removed due to size"
+											: JSON.stringify(e, null, 2))
+									);
+									var e;
+								}))(e, t, r),
+						n,
+					))(r, t, n, a);
+			case "defaultedThunk":
+				return oe(t, n, e.process, a);
+			case "option":
+				return ((e, r, t) => t(O(e, r)))(t, n, i);
+			case "defaultedOptionThunk":
+				return ((e, r, t, n) => n(O(e, r).map((r) => (r === true ? t(e) : r))))(
+					t,
+					n,
+					e.process,
+					i,
+				);
+			case "mergeWithThunk":
+				return oe(t, n, g({}), (r) => {
+					const n = j(e.process(t), r);
+					return a(n);
+				});
+		}
+	};
+	const ae = (e) => ({
+		extract: (r, t) =>
+			((e, r, t) => {
+				const n = {};
+				const o = [];
+				for (const s of t) {
+					ne(
+						s,
+						(t, s, a, i) => {
+							const l = se(a, e, r, t, i);
+							Q(
+								l,
+								(e) => {
+									o.push(...e);
+								},
+								(e) => {
+									n[s] = e;
+								},
+							);
+						},
+						(e, t) => {
+							n[e] = t(r);
+						},
+					);
+				}
+				if (o.length > 0) {
+					return H(o);
+				} else {
+					return G(n);
+				}
+			})(r, t, e),
+		toString: () => {
+			const r = ((e, r) => {
+				const t = e.length;
+				const n = new Array(t);
+				for (let o = 0; o < t; o++) {
+					const t = e[o];
+					n[o] = r(t);
+				}
+				return n;
+			})(e, (e) =>
+				ne(
+					e,
+					(e, r, t, n) => e + " -> " + n.toString(),
+					(e, r) => "state(" + e + ")",
+				),
+			);
+			return "obj{\n" + r.join("\n") + "}";
+		},
+	});
+	const ie = (e, r, t) => {
+		n = ((e, r, t) =>
+			((e) =>
+				e.stype === J.Error
+					? {
+							stype: J.Error,
+							serror: ((e) => ({
+								input: t,
+								errors: e,
+							}))(e.serror),
+						}
+					: e)(r.extract([e], t)))(e, r, t);
+		return B(n, K.error, K.value);
+		var n;
+	};
+	const le = (e, r, t, n) => ({
+		tag: "field",
+		key: e,
+		newKey: r,
+		presence: t,
+		prop: n,
+	});
+	const ce = (e, r) =>
+		le(
+			e,
+			e,
+			{
+				tag: "required",
+				process: {},
+			},
+			r,
+		);
+	const ue = (e) => ce(e, re);
+	const ye = (e) => ce(e, te);
+	const de = (e, r) =>
+		((e, r) =>
+			le(
+				e,
+				e,
+				{
+					tag: "option",
+					process: {},
+				},
+				r,
+			))(e, ae(r));
+	const ge = (e, r, t) =>
+		((e, r, t) =>
+			le(
+				e,
+				e,
+				((e) => ({
+					tag: "defaultedThunk",
+					process: g(e),
+				}))(r),
+				t,
+			))(
+			e,
+			r,
+			((e) => {
+				r = (r) => {
+					t = e;
+					n = r;
+					if (k.call(t, n) > -1) {
+						return K.value(r);
+					} else {
+						return K.error(
+							`Unsupported value: "${r}", choose one of "${e.join(", ")}".`,
+						);
+					}
+					var t;
+					var n;
+				};
+				return Y((e) => r(e).fold(H, G));
+				var r;
+			})(t),
+		);
+	const pe = [
+		de("console", [
+			ge("type", "warn", ["error", "warn", "log", "info"]),
+			ue("message"),
+		]),
+		de("editor", [
+			ge("type", "warning", ["error", "warning", "info", "success"]),
+			ue("message"),
+		]),
+	];
+	const he = [ye("ok"), ue("id"), ue("key"), de("message", pe)];
+	const me = [ye("ok"), ce("status", ee), ue("name"), de("message", pe)];
+	var ve;
+	var fe;
+	var ke;
+	(ke = ve ||= {}).Timeout = "get_license_online_timeout_error";
+	ke.Missing = "get_license_online_missing_error";
+	ke.ParseResponse = "get_license_online_parse_response_error";
+	ke.Invalid = "get_license_online_invalid_error";
+	ke.Server = "get_license_online_server_error";
+	ke.Unknown = "get_license_online_unknown_error";
+	(fe ||= {}).NoKeySpecified = "get_license_no_key_specified";
+	const be = async (e, r, t, n = 30000) => {
+		const o = (r, n, o) =>
+			t.fold(
+				() => {
+					z(e, "readonly", n, o);
+					return K.error({
+						type: n,
+					});
+				},
+				(t) => {
+					z(e, r, n, o);
+					if (r === "readonly") {
+						return K.error({
+							type: n,
+						});
+					} else {
+						return K.value(t);
+					}
+				},
+			);
+		a = r.then(
+			(r) =>
+				((e) => {
+					const r = s(e) && e.ok === true ? he : me;
+					return ie("onlicenseKeyResult", ae(r), e);
+				})(r)
+					.mapError((r) => {
+						z(e, "readonly", ve.ParseResponse);
+						return {
+							type: ve.ParseResponse,
+						};
+					})
+					.bind((r) => {
+						if (r.ok) {
+							r.message
+								.map((e) => ({
+									console: e.console.getOrUndefined(),
+									editor: e.editor.getOrUndefined(),
+								}))
+								.each((r) => {
+									C(e, r);
+								});
+							return K.value(r.key);
+						}
+						{
+							const t = r.status >= 400 && r.status < 500;
+							const n = t ? ve.Invalid : ve.Server;
+							r.message
+								.map((e) => ({
+									console: e.console.getOrUndefined(),
+									editor: e.editor.getOrUndefined(),
+								}))
+								.each((r) => {
+									C(e, r);
+								});
+							return o(t ? "readonly" : "fallback", n, r.status);
+						}
+					}),
+			(r) => {
+				if (c(r)) {
+					try {
+						C(e, {
+							console: {
+								type: "error",
+								message: String(r),
+							},
+						});
+					} catch (e) {}
+				}
+				const t = ve.Unknown;
+				return o("fallback", t);
+			},
+		);
+		i = n;
+		l = () => {
+			const e = ve.Timeout;
+			return o("fallback", e);
+		};
+		return new Promise((e, r) => {
+			const t = setTimeout(() => e(l()), i);
+			a.then(e, r).finally(() => {
+				clearTimeout(t);
+			});
+		});
+		var a;
+		var i;
+		var l;
+	};
+	const we = async (e, r) => {
+		const t = ((e) => {
+			const { configKey: r, onlineKey: t } = e;
+			if (l(t)) {
+				if (l(r)) {
+					return {
+						type: "reportNoKey",
+					};
+				} else {
+					return {
+						type: "useConfigKey",
+						key: r,
+					};
+				}
+			} else if (l(r)) {
+				return {
+					type: "useOnlineKey",
+					key: t,
+				};
+			} else {
+				return {
+					type: "tryOnlineKeyPossibleFallback",
+					configKey: r,
+					onlineKey: t,
+				};
+			}
+		})({
+			configKey: F(e),
+			onlineKey: W(e),
+		});
+		switch (t.type) {
+			case "reportNoKey":
+				((e) => {
+					const r =
+						"The editor is disabled because a TinyMCE license key has not been provided";
+					C(e, {
+						console: {
+							type: "error",
+							message: R(
+								`${r}. Make sure to provide a valid license key or add license_key: 'gpl' to the init config to agree to the open source license terms.`,
+							),
+						},
+						editor: {
+							type: "warning",
+							message: `${r}.`,
+						},
+					});
+				})(e);
+				return K.error({
+					type: fe.NoKeySpecified,
+				});
+			case "useConfigKey": {
+				const { key: e } = t;
+				return K.value(e);
+			}
+			case "useOnlineKey": {
+				const { key: n } = t;
+				return be(e, n, f.none(), r);
+			}
+			case "tryOnlineKeyPossibleFallback": {
+				const { onlineKey: n, configKey: o } = t;
+				return be(e, n, f.some(o), r);
+			}
+		}
+	};
+	const Oe = (e, r) => {
+		const t = ((e) => {
+			let r;
+			let t = false;
+			return (...n) => {
+				if (!t) {
+					t = true;
+					r = e.apply(null, n);
+				}
+				return r;
+			};
+		})(we);
+		a = e;
+		const n = {
+			validate: async () => D(a),
+		};
+		var a;
+		const i = ((e) => {
+			let r = false;
+			return {
+				validate: async (t, n) => {
+					var a;
+					return (
+						s((a = n))
+							? O(a, "plugin").filter((e) => o(e) && e.length > 0)
+							: f.none()
+					).forall((t) => {
+						var n;
+						n = r;
+						C(e, {
+							console: {
+								type: "error",
+								message: R(
+									`The "${t}" plugin requires a valid TinyMCE license key.`,
+								),
+							},
+							...(n
+								? {}
+								: {
+										editor: {
+											type: "warning",
+											message:
+												"One or more premium plugins are disabled due to license key restrictions.",
+										},
+									}),
+						});
+						r = true;
+						return false;
+					});
+				},
+			};
+		})(e);
+		const l = (async (e, r) => {
+			try {
+				return await (async (e, r) => {
+					const t = `${r}/js/commerciallicensekeymanager${e.suffix}.js`;
+					var n;
+					return (
+						await ((n = t),
+						tinymce.Resource.load("licensekeymanager.6nle0b3ulk", n))
+					)(e);
+				})(e, r);
+			} catch (r) {
+				console.error(r);
+				((e) => {
+					const r =
+						"The editor is disabled because the TinyMCE license key could not be validated";
+					C(e, {
+						console: {
+							type: "error",
+							message: R(
+								`${r}. The TinyMCE Commercial License Key Manager plugin was unable to load additional required resources.`,
+							),
+						},
+						editor: {
+							type: "warning",
+							message: `${r}.`,
+						},
+					});
+				})(e);
+				return {
+					validate: async () => D(e),
+				};
+			}
+		})(e, r);
+		return Object.freeze({
+			validate: Object.freeze(async (r) => {
+				const o = (await t(e)).fold(
+					() => ({
+						type: "none",
+					}),
+					(e) =>
+						e.toLowerCase() === "gpl"
+							? {
+									type: "gpl",
+									key: "gpl",
+								}
+							: {
+									type: "commercial",
+									key: e,
+								},
+				);
+				switch (o.type) {
+					case "none":
+						return n.validate(r);
+					case "gpl": {
+						const { key: e } = o;
+						return i.validate(e, r);
+					}
+					case "commercial": {
+						const { key: e } = o;
+						return (await l).validate(e, r);
+					}
+				}
+			}),
+		});
+	};
+	var _e;
+	var Te;
+	_e = tinymce;
+	Te = "licensekeymanager";
+	if (
+		N(_e, I)
+			? (console.error(
+					`The "${Te}" plugin requires at least version ${I} of TinyMCE.`,
+				),
+				0)
+			: N(_e, U) ||
+				(console.error(
+					`The "${Te}" plugin requires at least version ${I} of TinyMCE but less than ${U}.`,
+				),
+				0)
+	) {
+		tinymce._addLicenseKeyManager((e, r) => {
+			var t;
+			(0, (t = e).options.register)("online_license_key", {
+				processor: (e) => {
+					var r;
+					return {
+						valid: true,
+					};
+				},
+				immutable: true,
+			});
+			const n = Oe(e, r);
+			n.validate(e);
+			return n;
+		});
+	}
+})();
